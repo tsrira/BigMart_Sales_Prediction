@@ -1,16 +1,14 @@
 import streamlit as st
 import pandas as pd
 import pickle
-import sklearn
 
-# === Load Model from Pickle ===
+# === Load Model and Version Info from Pickle ===
 with open("bigmart_best_model.pkl", "rb") as f:
-    model = pickle.load(f)
+    model, sklearn_version = pickle.load(f)
 
 st.title("🛒 BigMart Sales Prediction App")
 
-# Show scikit-learn version from your environment
-st.markdown(f"Using **scikit-learn v{sklearn.__version__}** model to predict item sales.")
+st.markdown(f"Using **scikit-learn v{sklearn_version}** model to predict item sales.")
 
 # === User Inputs ===
 Item_Identifier = st.text_input("Item Identifier", "FDA15")
@@ -53,10 +51,6 @@ if st.button("Predict Sales"):
         "Outlet_Age": Outlet_Age
     }])
 
-    try:
-        # Make prediction
-        prediction = model.predict(input_df)[0]
-        st.success(f"📈 Predicted Item Outlet Sales: ₹{prediction:.2f}")
-    except Exception as e:
-        st.error("⚠️ Prediction failed. Likely reason: input format mismatch with the trained model.")
-        st.exception(e)
+    # Make prediction
+    prediction = model.predict(input_df)[0]
+    st.success(f"📈 Predicted Item Outlet Sales: ₹{prediction:.2f}")
